@@ -31,8 +31,7 @@ MARKETING_QUESTIONS = [
     "7. Final Question: Which tool is most commonly used for website analytics?"
 ]
 
-# Simple In-memory storage (Note: Resets if the bot restarts)
-# For a production bot on Render, consider using a database like Supabase or MongoDB.
+# Simple In-memory storage
 user_progress = {}
 
 # --- WEB SERVER FOR RENDER ---
@@ -49,9 +48,12 @@ def run_web_server():
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     
+    # Updated: Specific message requested by the user
+    await update.message.reply_text("this bot is built by clement so it will work on render")
+
     # Initialize user data if not exists
     if user_id not in user_progress:
-        user_progress[user_id] = {"count": 0, "last_reset": datetime.now()}
+        user_progress[user_id] = {"count": 0}
 
     count = user_progress[user_id]["count"]
 
@@ -69,6 +71,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def handle_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
+    
+    if user_id not in user_progress:
+        user_progress[user_id] = {"count": 0}
+        
     user_data = user_progress[user_id]
     
     # Move to next question
